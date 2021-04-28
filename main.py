@@ -52,10 +52,11 @@ def process_req(req):
 
 
 def process_file():
-    filename = "oneword.txt"
+    filename = "wordList.txt"
     with open(filename) as f:
         word_list = f.readlines()
-    pattern = re.compile(r'(?i)^(?:(?![×Þß÷þø])[\'0-9a-zÀ-ÿ])+')
+    pattern = re.compile(r'(?i)^(?:(?![×Þß÷þø])[\'0-9a-zÀ-ÿ\s])+')
+    failed = []
     for line in word_list:
         word = pattern.search(line)
         if word is not None:
@@ -64,10 +65,13 @@ def process_file():
             if len(res)!=0:
                 res[0] = word.group(0) + " - " + res[0]
             else:
-                res.append(word.group(0) + " - ")
+                failed.append(word.group(0) + " - ")
             with open('output.txt', 'a') as f:
                 for listitem in res:
                     f.write('%s\n' % listitem)
+    with open('output.txt', 'a') as f:
+        for listitem in failed:
+            f.write('%s\n' % listitem)
 
 
 process_file()
